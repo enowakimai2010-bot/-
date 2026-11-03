@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>忘れ物ナビ｜学校版</title>
+<style>
+:root{--primary:#4f5bba;--primary2:#6d78d8;--bg:#f5f6fa;--card:#fff;--text:#333;--muted:#70758a;--line:#e5e7ef;--green:#35a86b;--orange:#f19a3e;--red:#e05b63}
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif;background:var(--bg);color:var(--text)}
+header{background:linear-gradient(135deg,#4f5bba,#7580df);color:#fff;padding:22px 18px 18px;position:sticky;top:0;z-index:10;box-shadow:0 3px 14px #0002}
+.header-inner{max-width:1100px;margin:auto}.brand{font-size:25px;font-weight:800}.subtitle{font-size:12px;opacity:.9;margin-top:4px}
+nav{max-width:1100px;margin:12px auto 0;display:flex;gap:7px;overflow:auto}.tab{border:0;background:#ffffff2b;color:white;padding:10px 14px;border-radius:12px;cursor:pointer;white-space:nowrap;font-weight:700}.tab.active,.tab:hover{background:#fff;color:var(--primary)}
+main{max-width:1100px;margin:0 auto;padding:24px 16px 60px}.page{display:none}.page.active{display:block}
+.hero{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:22px;margin-bottom:18px}.hero h1{margin:0 0 7px;font-size:24px}.hero p{margin:0;color:var(--muted)}
+.searchbar{display:flex;gap:9px;margin-top:18px}.searchbar input{flex:1;padding:14px 15px;border:2px solid var(--line);border-radius:13px;font-size:15px;outline:none}.searchbar input:focus{border-color:var(--primary2)}
+button{font:inherit}.primary{border:0;background:var(--primary);color:white;padding:12px 16px;border-radius:12px;font-weight:800;cursor:pointer}.secondary{border:1px solid var(--line);background:#fff;color:var(--text);padding:10px 14px;border-radius:11px;font-weight:700;cursor:pointer}.danger{background:#fff0f1;color:#c6424b;border:1px solid #ffd1d4}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}.card{background:#fff;border:1px solid var(--line);border-radius:17px;padding:16px;box-shadow:0 4px 14px #20204008}.item-icon{font-size:35px}.item-title{font-size:18px;font-weight:800;margin:7px 0}.meta{font-size:13px;color:var(--muted);line-height:1.75}.tag{display:inline-block;background:#eef0ff;color:#4f5bba;border-radius:999px;padding:4px 8px;font-size:12px;margin-top:7px}.claim{width:100%;margin-top:12px}
+.section-title{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:25px 0 12px}.section-title h2{font-size:20px;margin:0}.count{font-size:12px;color:var(--muted)}
+.places{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}.place-btn{padding:15px 10px;border:1px solid var(--line);background:#fff;border-radius:14px;cursor:pointer;font-weight:700}.place-btn.active,.place-btn:hover{background:#eef0ff;border-color:#c8cdfb;color:var(--primary)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.stat{background:#fff;border:1px solid var(--line);border-radius:16px;padding:17px}.stat .num{font-size:27px;font-weight:900;color:var(--primary)}.stat .label{font-size:12px;color:var(--muted)}
+.dashboard-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:15px}.panel{background:#fff;border:1px solid var(--line);border-radius:17px;padding:18px}.mini-list{display:grid;gap:10px}.mini{padding:12px;border:1px solid var(--line);border-radius:12px}.mini strong{display:block}.status{font-size:12px;border-radius:999px;padding:4px 8px;display:inline-block;background:#fff3df;color:#a96714}.status.done{background:#e7f8ef;color:#237b4e}.barrow{margin:12px 0}.barlabel{display:flex;justify-content:space-between;font-size:13px}.bar{height:14px;background:#edf0f5;border-radius:99px;overflow:hidden;margin-top:7px;position:relative}.bar span{display:block;height:100%;border-radius:99px}.count-bar{position:absolute;left:0;top:0;background:linear-gradient(90deg,#6d78d8,#4f5bba)}.return-bar{position:absolute;left:0;top:3px;height:8px!important;background:#e05b63;box-shadow:0 0 0 1px #fff8}.bar-legend{display:flex;gap:14px;flex-wrap:wrap;font-size:11px;color:var(--muted);margin-top:6px}.bar-legend span{display:inline-flex;align-items:center;gap:5px}.legend-dot{width:9px;height:9px;border-radius:50%;display:inline-block}.purple-dot{background:#5d68c9}.red-dot{background:#e05b63}
+.modal-bg{position:fixed;inset:0;background:#1118;display:none;align-items:center;justify-content:center;padding:16px;z-index:50}.modal-bg.show{display:flex}.modal{background:#fff;width:min(620px,100%);max-height:90vh;overflow:auto;border-radius:20px;padding:22px}.modal h2{margin-top:0}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{display:flex;flex-direction:column;gap:6px}.field.full{grid-column:1/-1}.field label{font-size:13px;font-weight:800}.field input,.field select,.field textarea{padding:11px;border:1px solid var(--line);border-radius:10px;font:inherit}.field textarea{min-height:80px;resize:vertical}.actions{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}.empty{padding:28px;text-align:center;color:var(--muted);background:#fff;border:1px dashed var(--line);border-radius:16px}
+.notice{padding:12px 14px;border-radius:12px;background:#eef7ff;color:#345a7c;margin-bottom:15px;display:none}.notice.show{display:block}
+@media(max-width:720px){.stats{grid-template-columns:1fr 1fr}.dashboard-grid{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}.searchbar{flex-direction:column}}
+
+.ai-box{margin-top:12px;padding:13px;border:1px solid #d9ddff;background:#f7f8ff;border-radius:13px}
+.ai-box strong{color:var(--primary)}.ai-box p{margin:5px 0 10px;font-size:12px;color:var(--muted)}
+.ai-row{display:flex;gap:8px;flex-wrap:wrap}.ai-status{font-size:12px;color:var(--muted);margin-top:8px}
+.notify-card{background:#effaf4;border:1px solid #c9ecd8;border-radius:14px;padding:14px;margin-bottom:14px}
+.notify-card h3{margin:0 0 6px;color:#287b50;font-size:16px}.notify-card p{margin:4px 0;font-size:13px}
+.week-modal-list{display:grid;gap:9px;max-height:55vh;overflow:auto}
+.week-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0}
+.week-summary .mini-stat{background:#f7f8ff;border-radius:12px;padding:12px;text-align:center}
+.week-summary b{display:block;font-size:22px;color:var(--primary)}
+@media(max-width:600px){.week-summary{grid-template-columns:1fr 1fr}.analysis-points{grid-template-columns:1fr}.barlabel{gap:8px}.barlabel b{font-size:12px}}
+.analysis-banner{background:linear-gradient(135deg,#fff4f4,#fff8f8);border:2px solid #ef8a91;border-left:7px solid #e05b63;border-radius:17px;padding:16px 18px;margin:18px 0}.analysis-banner h3{margin:0 0 7px;color:#c6424b;font-size:18px}.analysis-banner p{margin:5px 0;line-height:1.8}.analysis-points{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:11px}.analysis-point{background:#fff;border:1px solid #ffd7da;border-radius:12px;padding:10px}.analysis-point b{display:block;color:#c6424b;font-size:17px}.photo-first{grid-column:1/-1;background:#f8f9ff;border:1px dashed #cfd4f5;border-radius:14px;padding:13px}.photo-first label{display:block;margin-bottom:6px}.photo-preview img{max-width:230px;max-height:160px;border-radius:12px;margin-top:8px;display:block}.ai-box.teacher-ai{margin-top:10px}.mail-template{background:#fbfbff;border:1px solid #dfe3ff;border-radius:14px;padding:14px}.mail-template .template-preview{background:#fff;border:1px solid #eceef5;border-radius:12px;padding:14px;line-height:1.9;white-space:pre-wrap}.claim-group{margin-bottom:16px}.claim-group-title{display:flex;justify-content:space-between;align-items:center;background:#f7f8ff;border:1px solid #dfe3ff;border-radius:13px;padding:11px 13px;font-weight:800;color:var(--primary)}.claim-group-body{display:grid;gap:8px;margin-top:8px}.claim-item{padding:11px 12px;border:1px solid var(--line);border-radius:11px;background:#fff}.mail-box{background:#f8f9ff;border:1px solid #dfe3ff;border-radius:14px;padding:14px}.mail-box textarea{width:100%;min-height:260px;padding:12px;border:1px solid var(--line);border-radius:10px;font:inherit;line-height:1.6}.role-note{font-size:12px;color:var(--muted);margin-top:7px}.ai-connection-note{background:#f3f4ff;border:1px solid #dfe3ff;border-radius:12px;padding:10px 13px;margin:10px 0;color:#4f5bba;font-size:13px}.hidden-by-role{display:none!important}.role-switch{display:flex;gap:7px;align-items:center;margin-top:8px}.role-switch button{border:1px solid #ffffff55;background:#ffffff22;color:#fff;padding:6px 10px;border-radius:9px;cursor:pointer;font-size:12px;font-weight:700}.role-switch button.active{background:#fff;color:var(--primary)}
+
+</style>
+</head>
+<body>
+<header>
+<div class="header-inner">
+<div class="brand">🔍 忘れ物ナビ</div>
+<div class="subtitle">学校版プロトタイプ｜見つける・届ける・つなげる</div><div class="role-switch"><span style="font-size:12px">表示：</span><button id="studentRoleBtn" onclick="setRole('student')">生徒</button><button id="teacherRoleBtn" onclick="setRole('teacher')">先生</button></div>
+<nav>
+<button class="tab active" data-page="search">🔍 探す</button>
+<button class="tab" data-page="place">📍 場所から探す</button>
+<button class="tab" data-page="register">📦 忘れ物を登録</button>
+<button class="tab student-only" data-page="lost">📝 なくした物を申請</button>
+<button class="tab teacher-only" data-page="teacher">📊 先生ページ</button>
+</nav>
+</div>
+</header>
+
+<main>
+<section id="search" class="page active">
+<div class="hero">
+<h1>忘れ物を探そう！</h1><p>キーワードや場所から、学校に届けられた忘れ物を探せます。</p>
+<div class="searchbar"><input id="searchInput" placeholder="例：黒い水筒、体育館、筆箱"><button class="primary" onclick="executeSearch()">検索</button></div>
+</div>
+<div id="notice" class="notice"></div>
+<div class="section-title"><h2>🔎 検索結果</h2><span id="resultCount" class="count"></span></div>
+<div id="searchGrid" class="grid"></div>
+</section>
+
+<section id="place" class="page">
+<div class="hero"><h1>📍 場所から探す</h1><p>忘れ物を見つけた・落とした可能性のある場所を選んでください。</p></div>
+<div id="placeButtons" class="places"></div>
+<div class="section-title"><h2 id="placeHeading">場所を選んでください</h2><span id="placeCount" class="count"></span></div>
+<div id="placeGrid" class="grid"></div>
+</section>
+
+<section id="register" class="page">
+<div class="hero"><h1>📦 忘れ物を登録</h1><p>学校で見つけた忘れ物を登録すると、持ち主が探しやすくなります。</p></div>
+<div class="panel">
+<div class="form-grid">
+<div class="photo-first">
+<label>📷 まず写真をのせよう（任意）</label>
+<input id="regPhoto" type="file" accept="image/*" onchange="previewPhoto(this)">
+<div id="photoPreview" class="photo-preview"></div>
+<div class="ai-box"><strong>🤖 AIかんたん入力</strong><p>写真を選んでから、AI分析を押すとカテゴリー・名前・色の候補を自動入力します。</p><div class="ai-row"><button type="button" class="secondary" onclick="analyzeRegisterPhoto()">🤖 写真を分析して入力</button><button type="button" class="secondary" onclick="clearRegisterAI()">リセット</button></div><div id="regAIStatus" class="ai-status"></div></div>
+</div>
+<div class="field"><label>忘れ物の名前 *</label><input id="regTitle" placeholder="例：黒い水筒"></div>
+<div class="field"><label>カテゴリー *</label><select id="regCategory"></select></div>
+<div class="field"><label>見つけた場所 *</label><select id="regPlace"></select></div>
+<div class="field"><label>見つけた日 *</label><input id="regDate" type="date"></div>
+<div class="field"><label>色・特徴</label><input id="regTag" placeholder="例：黒・白いロゴ・星のシール"></div>
+<div class="field"><label>場所の詳細（任意）</label><input id="regDetail" placeholder="例：2階の窓側の席"></div>
+</div>
+<div class="actions"><button class="primary" onclick="registerItem()">忘れ物を登録する</button></div>
+</div>
+</section>
+
+<section id="lost" class="page">
+<div class="hero"><h1>📝 なくした物を申請</h1><p>写真を読み込むと、特徴やカテゴリーなどを自動入力できます。詳細はあとから直せます。</p></div>
+
+<div id="lostNotifications" class="notify-card" style="display:none"></div>
+
+<div class="panel">
+<div class="form-grid">
+<div class="photo-first">
+<label>📷 まず写真をのせよう（任意）</label>
+<input id="lostPhoto" type="file" accept="image/*" onchange="previewLostPhoto(this)">
+<div id="lostPhotoPreview" class="photo-preview"></div>
+<div class="ai-box">
+<strong>✨ AIかんたん入力</strong>
+<p>写真からカテゴリー・色・特徴の候補を自動で入れます。入力後に自由に修正できます。</p>
+<div class="ai-row"><button type="button" class="secondary" onclick="analyzeLostPhoto()">🤖 写真を読み取って自動入力</button><button type="button" class="secondary" onclick="clearLostAI()">リセット</button></div>
+<div id="lostAIStatus" class="ai-status"></div>
+</div>
+</div>
+<div class="field"><label>申請者の名前 *</label><input id="lostName" placeholder="例：山田太郎"></div>
+<div class="field"><label>なくした物 *</label><input id="lostTitle" placeholder="例：黒い水筒"></div>
+<div class="field"><label>カテゴリー *</label><select id="lostCategory"></select></div>
+<div class="field"><label>なくした日 *</label><input id="lostDate" type="date"></div>
+<div class="field"><label>最後に見た場所 *</label><select id="lostPlace"></select></div>
+<div class="field"><label>色（任意）</label><input id="lostColor"></div>
+<div class="field"><label>メーカー・ブランド（任意）</label><input id="lostBrand"></div>
+<div class="field"><label>柄・デザイン（任意）</label><input id="lostPattern"></div>
+<div class="field"><label>自分の物だと分かる特徴 *</label><input id="lostFeature" placeholder="例：名前シール、傷、キーホルダー"></div>
+<div class="field full"><label>場所の詳細（任意）</label><input id="lostDetail"></div>
+
+<div class="field"><label>通知・連絡方法 *</label><select id="lostContactMethod"><option>サイト内で先生から連絡</option><option>メール</option><option>電話</option></select></div>
+<div class="field"><label>連絡先（任意）</label><input id="lostContact"></div>
+<div class="field full"><label>その他（任意）</label><textarea id="lostNotes"></textarea></div>
+</div>
+<div class="actions"><button class="primary" onclick="submitLostReport()">捜索届を提出する</button></div>
+</div>
+</section>
+
+<section id="teacher" class="page teacher-only">
+<div class="hero"><h1>📊 先生ページ</h1><p>「これ、自分のかも！」申請、今週のメール文、場所ごとの返却状況を確認できます。</p></div>
+<div class="stats">
+<div class="stat"><div id="statAll" class="num">0</div><div class="label">登録された忘れ物</div></div>
+<div class="stat"><div id="statWeek" class="num">0</div><div class="label">今週登録されたもの</div></div>
+<div class="stat"><div id="statReturned" class="num">0</div><div class="label">返却済み</div></div>
+<div class="stat"><div id="statClaims" class="num">0</div><div class="label">確認待ちの申請</div></div>
+</div>
+
+<div class="section-title"><h2>📧 今週の忘れ物メッセージ</h2><button class="primary" onclick="openMailSummary()">文章を作る</button></div>
+<div class="panel mail-template" style="margin-bottom:18px"><p style="margin:0 0 8px;color:var(--muted);font-size:13px">メールを送る機能ではなく、先生がそのままコピーして使える「今週の忘れ物のお知らせ文」を作ります。</p><div id="mailPreview" class="template-preview">「文章を作る」を押すと、今週の件数や種類・場所が入った文章がここに表示されます。</div></div>
+<div class="ai-connection-note">🤖 写真分析AI：サーバー設定後は、写真そのものをAIが見て候補を入力します。APIキーはブラウザには置きません。</div>
+<div id="aiAnalysisBanner" class="analysis-banner"><h3>🤖 忘れ物の傾向をかんたん分析</h3><p id="aiAnalysisText">登録データを分析しています…</p><div id="aiAnalysisPoints" class="analysis-points"></div></div>
+
+<div class="section-title"><h2>🙋「これ、自分のかも！」申請</h2><span id="claimCount" class="count"></span></div>
+<div id="claimList" class="mini-list"></div>
+
+<div class="section-title"><h2>📍 場所別ダッシュボード</h2></div>
+<div class="panel"><div id="placeBars"></div></div>
+</section>
+</main>
+
+
+<div id="claimModal" class="modal-bg">
+<div class="modal">
+<h2>🙋 これ、自分のかも！</h2>
+<p id="claimItemText"></p>
+<div class="form-grid">
+<div class="field"><label>名前 *</label><input id="claimName" placeholder="例：山田太郎"></div>
+<div class="field"><label>連絡方法 *</label><select id="claimMethod"><option>サイト内で先生から連絡</option><option>メール</option><option>電話</option></select></div>
+<div class="field full"><label>連絡先（任意）</label><input id="claimContact" placeholder="メールアドレスなど"></div>
+<div class="field full"><label>本人だと分かる追加情報（任意）</label><textarea id="claimMessage" placeholder="例：裏側に自分の名前が書いてあります"></textarea></div>
+</div>
+<div class="actions"><button class="secondary" onclick="closeClaim()">キャンセル</button><button class="primary" onclick="submitClaim()">申請する</button></div>
+</div>
+</div>
+
+<div id="mailModal" class="modal-bg">
+<div class="modal">
+<h2>📧 今週の忘れ物メッセージ</h2>
+<p style="color:var(--muted);font-size:13px">この文章をコピーして、先生からのお知らせなどに貼り付けて使えます。</p>
+<div class="field"><label>件名</label><input id="mailSubject"></div>
+<div class="field" style="margin-top:10px"><label>本文</label><textarea id="mailBody" style="min-height:360px"></textarea></div>
+<div class="actions"><button class="secondary" onclick="closeMailSummary()">閉じる</button><button class="primary" onclick="copyMailText()">📋 文章をコピー</button></div>
+</div>
+</div>
+
+<script>
+const places = ["バスロータリー", "飛田給駅バス内", "矢野口バス内", "三鷹バス内", "教室", "廊下", "校庭", "体育館", "更衣室", "ホール", "トイレ", "そのほか", "図書館", "ホワイエ", "下駄箱", "食堂"];
+const categories = ["水筒","筆箱","傘・折りたたみ傘","体育着・ジャージ","制服・衣類","靴・上履き","文房具","学生証・カード類","タブレット・PC","イヤホン・ヘッドホン","その他"];
+const demoItems = [{"id": "demo-1", "icon": "🥤", "title": "黒い水筒", "category": "水筒", "place": "バスロータリー", "date": "2026-11-02", "tag": "黒・白いロゴ", "detail": "", "source": "demo"}, {"id": "demo-2", "icon": "✏️", "title": "紺色の筆箱", "category": "筆箱", "place": "飛田給駅バス内", "date": "2026-11-02", "tag": "紺・星のワッペン", "detail": "", "source": "demo"}, {"id": "demo-3", "icon": "🌂", "title": "折りたたみ傘", "category": "傘・折りたたみ傘", "place": "矢野口バス内", "date": "2026-11-03", "tag": "水色・無地", "detail": "", "source": "demo"}, {"id": "demo-4", "icon": "📓", "title": "青いノート", "category": "文房具", "place": "三鷹バス内", "date": "2026-11-02", "tag": "青・表紙に小さなシール", "detail": "", "source": "demo"}, {"id": "demo-5", "icon": "🎧", "title": "ワイヤレスイヤホン", "category": "イヤホン・ヘッドホン", "place": "教室", "date": "2026-11-02", "tag": "白・ケース付き", "detail": "", "source": "demo"}, {"id": "demo-6", "icon": "🪪", "title": "学生証ケース", "category": "学生証・カード類", "place": "廊下", "date": "2026-11-02", "tag": "透明・青いストラップ", "detail": "", "source": "demo"}, {"id": "demo-7", "icon": "👕", "title": "体育着の上", "category": "体育着・ジャージ", "place": "校庭", "date": "2026-11-02", "tag": "白・学校指定", "detail": "", "source": "demo"}, {"id": "demo-8", "icon": "👟", "title": "上履き袋", "category": "靴・上履き", "place": "体育館", "date": "2026-11-02", "tag": "紺・名前タグ", "detail": "", "source": "demo"}, {"id": "demo-9", "icon": "📱", "title": "タブレットケース", "category": "タブレット・PC", "place": "更衣室", "date": "2026-11-03", "tag": "黒・角に傷", "detail": "", "source": "demo"}, {"id": "demo-10", "icon": "🧥", "title": "紺色のパーカー", "category": "制服・衣類", "place": "ホール", "date": "2026-11-02", "tag": "紺・胸に小さなワッペン", "detail": "", "source": "demo"}, {"id": "demo-11", "icon": "🥤", "title": "黒い水筒", "category": "水筒", "place": "トイレ", "date": "2026-11-02", "tag": "黒・白いロゴ", "detail": "", "source": "demo"}, {"id": "demo-12", "icon": "✏️", "title": "紺色の筆箱", "category": "筆箱", "place": "そのほか", "date": "2026-11-02", "tag": "紺・星のワッペン", "detail": "", "source": "demo"}, {"id": "demo-13", "icon": "🌂", "title": "折りたたみ傘", "category": "傘・折りたたみ傘", "place": "図書館", "date": "2026-11-02", "tag": "水色・無地", "detail": "", "source": "demo"}, {"id": "demo-14", "icon": "📓", "title": "青いノート", "category": "文房具", "place": "ホワイエ", "date": "2026-11-02", "tag": "青・表紙に小さなシール", "detail": "", "source": "demo"}, {"id": "demo-15", "icon": "🎧", "title": "ワイヤレスイヤホン", "category": "イヤホン・ヘッドホン", "place": "下駄箱", "date": "2026-11-02", "tag": "白・ケース付き", "detail": "", "source": "demo"}, {"id": "demo-16", "icon": "🪪", "title": "学生証ケース", "category": "学生証・カード類", "place": "食堂", "date": "2026-11-02", "tag": "透明・青いストラップ", "detail": "", "source": "demo"}, {"id": "demo-17", "icon": "👕", "title": "体育着の上", "category": "体育着・ジャージ", "place": "バスロータリー", "date": "2026-11-03", "tag": "白・学校指定", "detail": "", "source": "demo"}, {"id": "demo-18", "icon": "👟", "title": "上履き袋", "category": "靴・上履き", "place": "飛田給駅バス内", "date": "2026-11-02", "tag": "紺・名前タグ", "detail": "", "source": "demo"}, {"id": "demo-19", "icon": "📱", "title": "タブレットケース", "category": "タブレット・PC", "place": "矢野口バス内", "date": "2026-11-03", "tag": "黒・角に傷", "detail": "", "source": "demo"}, {"id": "demo-20", "icon": "🧥", "title": "紺色のパーカー", "category": "制服・衣類", "place": "三鷹バス内", "date": "2026-11-03", "tag": "紺・胸に小さなワッペン", "detail": "", "source": "demo"}, {"id": "demo-21", "icon": "🥤", "title": "黒い水筒", "category": "水筒", "place": "教室", "date": "2026-11-02", "tag": "黒・白いロゴ", "detail": "", "source": "demo"}, {"id": "demo-22", "icon": "✏️", "title": "紺色の筆箱", "category": "筆箱", "place": "廊下", "date": "2026-11-02", "tag": "紺・星のワッペン", "detail": "", "source": "demo"}, {"id": "demo-23", "icon": "🌂", "title": "折りたたみ傘", "category": "傘・折りたたみ傘", "place": "校庭", "date": "2026-11-03", "tag": "水色・無地", "detail": "", "source": "demo"}, {"id": "demo-24", "icon": "📓", "title": "青いノート", "category": "文房具", "place": "体育館", "date": "2026-11-03", "tag": "青・表紙に小さなシール", "detail": "", "source": "demo"}, {"id": "demo-25", "icon": "🎧", "title": "ワイヤレスイヤホン", "category": "イヤホン・ヘッドホン", "place": "更衣室", "date": "2026-11-03", "tag": "白・ケース付き", "detail": "", "source": "demo"}, {"id": "demo-26", "icon": "🪪", "title": "学生証ケース", "category": "学生証・カード類", "place": "ホール", "date": "2026-11-02", "tag": "透明・青いストラップ", "detail": "", "source": "demo"}, {"id": "demo-27", "icon": "👕", "title": "体育着の上", "category": "体育着・ジャージ", "place": "トイレ", "date": "2026-11-02", "tag": "白・学校指定", "detail": "", "source": "demo"}, {"id": "demo-28", "icon": "👟", "title": "上履き袋", "category": "靴・上履き", "place": "そのほか", "date": "2026-11-03", "tag": "紺・名前タグ", "detail": "", "source": "demo"}, {"id": "demo-29", "icon": "📱", "title": "タブレットケース", "category": "タブレット・PC", "place": "図書館", "date": "2026-11-02", "tag": "黒・角に傷", "detail": "", "source": "demo"}, {"id": "demo-30", "icon": "🧥", "title": "紺色のパーカー", "category": "制服・衣類", "place": "ホワイエ", "date": "2026-11-02", "tag": "紺・胸に小さなワッペン", "detail": "", "source": "demo"}, {"id": "demo-31", "icon": "🥤", "title": "黒い水筒", "category": "水筒", "place": "下駄箱", "date": "2026-11-03", "tag": "黒・白いロゴ", "detail": "", "source": "demo"}, {"id": "demo-32", "icon": "✏️", "title": "紺色の筆箱", "category": "筆箱", "place": "食堂", "date": "2026-11-02", "tag": "紺・星のワッペン", "detail": "", "source": "demo"}, {"id": "demo-33", "icon": "🌂", "title": "折りたたみ傘", "category": "傘・折りたたみ傘", "place": "バスロータリー", "date": "2026-11-03", "tag": "水色・無地", "detail": "", "source": "demo"}, {"id": "demo-34", "icon": "📓", "title": "青いノート", "category": "文房具", "place": "飛田給駅バス内", "date": "2026-11-03", "tag": "青・表紙に小さなシール", "detail": "", "source": "demo"}, {"id": "demo-35", "icon": "🎧", "title": "ワイヤレスイヤホン", "category": "イヤホン・ヘッドホン", "place": "矢野口バス内", "date": "2026-11-03", "tag": "白・ケース付き", "detail": "", "source": "demo"}, {"id": "demo-36", "icon": "🪪", "title": "学生証ケース", "category": "学生証・カード類", "place": "三鷹バス内", "date": "2026-11-02", "tag": "透明・青いストラップ", "detail": "", "source": "demo"}, {"id": "demo-37", "icon": "👕", "title": "体育着の上", "category": "体育着・ジャージ", "place": "教室", "date": "2026-11-03", "tag": "白・学校指定", "detail": "", "source": "demo"}, {"id": "demo-38", "icon": "👟", "title": "上履き袋", "category": "靴・上履き", "place": "廊下", "date": "2026-11-02", "tag": "紺・名前タグ", "detail": "", "source": "demo"}, {"id": "demo-39", "icon": "📱", "title": "タブレットケース", "category": "タブレット・PC", "place": "校庭", "date": "2026-11-03", "tag": "黒・角に傷", "detail": "", "source": "demo"}, {"id": "demo-40", "icon": "🧥", "title": "紺色のパーカー", "category": "制服・衣類", "place": "体育館", "date": "2026-11-02", "tag": "紺・胸に小さなワッペン", "detail": "", "source": "demo"}, {"id": "demo-41", "icon": "🥤", "title": "黒い水筒", "category": "水筒", "place": "更衣室", "date": "2026-11-03", "tag": "黒・白いロゴ", "detail": "", "source": "demo"}, {"id": "demo-42", "icon": "✏️", "title": "紺色の筆箱", "category": "筆箱", "place": "ホール", "date": "2026-11-03", "tag": "紺・星のワッペン", "detail": "", "source": "demo"}, {"id": "demo-43", "icon": "🌂", "title": "折りたたみ傘", "category": "傘・折りたたみ傘", "place": "トイレ", "date": "2026-11-02", "tag": "水色・無地", "detail": "", "source": "demo"}, {"id": "demo-44", "icon": "📓", "title": "青いノート", "category": "文房具", "place": "そのほか", "date": "2026-11-02", "tag": "青・表紙に小さなシール", "detail": "", "source": "demo"}, {"id": "demo-45", "icon": "🎧", "title": "ワイヤレスイヤホン", "category": "イヤホン・ヘッドホン", "place": "図書館", "date": "2026-11-02", "tag": "白・ケース付き", "detail": "", "source": "demo"}, {"id": "demo-46", "icon": "🪪", "title": "学生証ケース", "category": "学生証・カード類", "place": "ホワイエ", "date": "2026-11-02", "tag": "透明・青いストラップ", "detail": "", "source": "demo"}, {"id": "demo-47", "icon": "👕", "title": "体育着の上", "category": "体育着・ジャージ", "place": "下駄箱", "date": "2026-11-03", "tag": "白・学校指定", "detail": "", "source": "demo"}, {"id": "demo-48", "icon": "👟", "title": "上履き袋", "category": "靴・上履き", "place": "食堂", "date": "2026-11-02", "tag": "紺・名前タグ", "detail": "", "source": "demo"}, {"id": "demo-49", "icon": "📱", "title": "タブレットケース", "category": "タブレット・PC", "place": "バスロータリー", "date": "2026-11-02", "tag": "黒・角に傷", "detail": "", "source": "demo"}, {"id": "demo-50", "icon": "🧥", "title": "紺色のパーカー", "category": "制服・衣類", "place": "飛田給駅バス内", "date": "2026-11-02", "tag": "紺・胸に小さなワッペン", "detail": "", "source": "demo"}, {"id": "demo-51", "icon": "🥤", "title": "黒い水筒", "category": "水筒", "place": "矢野口バス内", "date": "2026-11-03", "tag": "黒・白いロゴ", "detail": "", "source": "demo"}, {"id": "demo-52", "icon": "✏️", "title": "紺色の筆箱", "category": "筆箱", "place": "三鷹バス内", "date": "2026-11-03", "tag": "紺・星のワッペン", "detail": "", "source": "demo"}, {"id": "demo-53", "icon": "🌂", "title": "折りたたみ傘", "category": "傘・折りたたみ傘", "place": "教室", "date": "2026-11-03", "tag": "水色・無地", "detail": "", "source": "demo"}, {"id": "demo-54", "icon": "📓", "title": "青いノート", "category": "文房具", "place": "廊下", "date": "2026-11-03", "tag": "青・表紙に小さなシール", "detail": "", "source": "demo"}, {"id": "demo-55", "icon": "🎧", "title": "ワイヤレスイヤホン", "category": "イヤホン・ヘッドホン", "place": "校庭", "date": "2026-11-02", "tag": "白・ケース付き", "detail": "", "source": "demo"}, {"id": "demo-56", "icon": "🪪", "title": "学生証ケース", "category": "学生証・カード類", "place": "体育館", "date": "2026-11-03", "tag": "透明・青いストラップ", "detail": "", "source": "demo"}, {"id": "demo-57", "icon": "👕", "title": "体育着の上", "category": "体育着・ジャージ", "place": "更衣室", "date": "2026-11-03", "tag": "白・学校指定", "detail": "", "source": "demo"}, {"id": "demo-58", "icon": "👟", "title": "上履き袋", "category": "靴・上履き", "place": "ホール", "date": "2026-11-02", "tag": "紺・名前タグ", "detail": "", "source": "demo"}, {"id": "demo-59", "icon": "📱", "title": "タブレットケース", "category": "タブレット・PC", "place": "トイレ", "date": "2026-11-03", "tag": "黒・角に傷", "detail": "", "source": "demo"}, {"id": "demo-60", "icon": "🧥", "title": "紺色のパーカー", "category": "制服・衣類", "place": "そのほか", "date": "2026-11-02", "tag": "紺・胸に小さなワッペン", "detail": "", "source": "demo"}, {"id": "demo-61", "icon": "🥤", "title": "黒い水筒", "category": "水筒", "place": "図書館", "date": "2026-10-06", "tag": "黒・白いロゴ", "detail": "", "source": "demo"}, {"id": "demo-62", "icon": "✏️", "title": "紺色の筆箱", "category": "筆箱", "place": "ホワイエ", "date": "2026-08-20", "tag": "紺・星のワッペン", "detail": "", "source": "demo"}, {"id": "demo-63", "icon": "🌂", "title": "折りたたみ傘", "category": "傘・折りたたみ傘", "place": "下駄箱", "date": "2026-09-26", "tag": "水色・無地", "detail": "", "source": "demo"}, {"id": "demo-64", "icon": "📓", "title": "青いノート", "category": "文房具", "place": "食堂", "date": "2026-10-07", "tag": "青・表紙に小さなシール", "detail": "", "source": "demo"}, {"id": "demo-65", "icon": "🎧", "title": "ワイヤレスイヤホン", "category": "イヤホン・ヘッドホン", "place": "バスロータリー", "date": "2026-08-29", "tag": "白・ケース付き", "detail": "", "source": "demo"}, {"id": "demo-66", "icon": "🪪", "title": "学生証ケース", "category": "学生証・カード類", "place": "飛田給駅バス内", "date": "2026-09-09", "tag": "透明・青いストラップ", "detail": "", "source": "demo"}, {"id": "demo-67", "icon": "👕", "title": "体育着の上", "category": "体育着・ジャージ", "place": "矢野口バス内", "date": "2026-09-23", "tag": "白・学校指定", "detail": "", "source": "demo"}, {"id": "demo-68", "icon": "👟", "title": "上履き袋", "category": "靴・上履き", "place": "三鷹バス内", "date": "2026-09-29", "tag": "紺・名前タグ", "detail": "", "source": "demo"}, {"id": "demo-69", "icon": "📱", "title": "タブレットケース", "category": "タブレット・PC", "place": "教室", "date": "2026-09-16", "tag": "黒・角に傷", "detail": "", "source": "demo"}, {"id": "demo-70", "icon": "🧥", "title": "紺色のパーカー", "category": "制服・衣類", "place": "廊下", "date": "2026-10-20", "tag": "紺・胸に小さなワッペン", "detail": "", "source": "demo"}, {"id": "demo-71", "icon": "🥤", "title": "黒い水筒", "category": "水筒", "place": "校庭", "date": "2026-09-28", "tag": "黒・白いロゴ", "detail": "", "source": "demo"}, {"id": "demo-72", "icon": "✏️", "title": "紺色の筆箱", "category": "筆箱", "place": "体育館", "date": "2026-10-23", "tag": "紺・星のワッペン", "detail": "", "source": "demo"}, {"id": "demo-73", "icon": "🌂", "title": "折りたたみ傘", "category": "傘・折りたたみ傘", "place": "更衣室", "date": "2026-09-17", "tag": "水色・無地", "detail": "", "source": "demo"}, {"id": "demo-74", "icon": "📓", "title": "青いノート", "category": "文房具", "place": "ホール", "date": "2026-09-06", "tag": "青・表紙に小さなシール", "detail": "", "source": "demo"}, {"id": "demo-75", "icon": "🎧", "title": "ワイヤレスイヤホン", "category": "イヤホン・ヘッドホン", "place": "トイレ", "date": "2026-09-23", "tag": "白・ケース付き", "detail": "", "source": "demo"}, {"id": "demo-76", "icon": "🪪", "title": "学生証ケース", "category": "学生証・カード類", "place": "そのほか", "date": "2026-10-19", "tag": "透明・青いストラップ", "detail": "", "source": "demo"}, {"id": "demo-77", "icon": "👕", "title": "体育着の上", "category": "体育着・ジャージ", "place": "図書館", "date": "2026-09-30", "tag": "白・学校指定", "detail": "", "source": "demo"}, {"id": "demo-78", "icon": "👟", "title": "上履き袋", "category": "靴・上履き", "place": "ホワイエ", "date": "2026-09-17", "tag": "紺・名前タグ", "detail": "", "source": "demo"}, {"id": "demo-79", "icon": "📱", "title": "タブレットケース", "category": "タブレット・PC", "place": "下駄箱", "date": "2026-09-30", "tag": "黒・角に傷", "detail": "", "source": "demo"}, {"id": "demo-80", "icon": "🧥", "title": "紺色のパーカー", "category": "制服・衣類", "place": "食堂", "date": "2026-08-25", "tag": "紺・胸に小さなワッペン", "detail": "", "source": "demo"}, {"id": "demo-81", "icon": "🥤", "title": "黒い水筒", "category": "水筒", "place": "バスロータリー", "date": "2026-09-07", "tag": "黒・白いロゴ", "detail": "", "source": "demo"}, {"id": "demo-82", "icon": "✏️", "title": "紺色の筆箱", "category": "筆箱", "place": "飛田給駅バス内", "date": "2026-08-30", "tag": "紺・星のワッペン", "detail": "", "source": "demo"}, {"id": "demo-83", "icon": "🌂", "title": "折りたたみ傘", "category": "傘・折りたたみ傘", "place": "矢野口バス内", "date": "2026-10-09", "tag": "水色・無地", "detail": "", "source": "demo"}, {"id": "demo-84", "icon": "📓", "title": "青いノート", "category": "文房具", "place": "三鷹バス内", "date": "2026-09-24", "tag": "青・表紙に小さなシール", "detail": "", "source": "demo"}, {"id": "demo-85", "icon": "🎧", "title": "ワイヤレスイヤホン", "category": "イヤホン・ヘッドホン", "place": "教室", "date": "2026-10-10", "tag": "白・ケース付き", "detail": "", "source": "demo"}, {"id": "demo-86", "icon": "🪪", "title": "学生証ケース", "category": "学生証・カード類", "place": "廊下", "date": "2026-09-26", "tag": "透明・青いストラップ", "detail": "", "source": "demo"}, {"id": "demo-87", "icon": "👕", "title": "体育着の上", "category": "体育着・ジャージ", "place": "校庭", "date": "2026-08-20", "tag": "白・学校指定", "detail": "", "source": "demo"}, {"id": "demo-88", "icon": "👟", "title": "上履き袋", "category": "靴・上履き", "place": "体育館", "date": "2026-09-24", "tag": "紺・名前タグ", "detail": "", "source": "demo"}, {"id": "demo-89", "icon": "📱", "title": "タブレットケース", "category": "タブレット・PC", "place": "更衣室", "date": "2026-09-03", "tag": "黒・角に傷", "detail": "", "source": "demo"}, {"id": "demo-90", "icon": "🧥", "title": "紺色のパーカー", "category": "制服・衣類", "place": "ホール", "date": "2026-09-06", "tag": "紺・胸に小さなワッペン", "detail": "", "source": "demo"}, {"id": "demo-91", "icon": "🥤", "title": "黒い水筒", "category": "水筒", "place": "トイレ", "date": "2026-09-11", "tag": "黒・白いロゴ", "detail": "", "source": "demo"}, {"id": "demo-92", "icon": "✏️", "title": "紺色の筆箱", "category": "筆箱", "place": "そのほか", "date": "2026-09-29", "tag": "紺・星のワッペン", "detail": "", "source": "demo"}, {"id": "demo-93", "icon": "🌂", "title": "折りたたみ傘", "category": "傘・折りたたみ傘", "place": "図書館", "date": "2026-10-10", "tag": "水色・無地", "detail": "", "source": "demo"}, {"id": "demo-94", "icon": "📓", "title": "青いノート", "category": "文房具", "place": "ホワイエ", "date": "2026-08-23", "tag": "青・表紙に小さなシール", "detail": "", "source": "demo"}, {"id": "demo-95", "icon": "🎧", "title": "ワイヤレスイヤホン", "category": "イヤホン・ヘッドホン", "place": "下駄箱", "date": "2026-08-25", "tag": "白・ケース付き", "detail": "", "source": "demo"}, {"id": "demo-96", "icon": "🪪", "title": "学生証ケース", "category": "学生証・カード類", "place": "食堂", "date": "2026-10-16", "tag": "透明・青いストラップ", "detail": "", "source": "demo"}, {"id": "demo-97", "icon": "👕", "title": "体育着の上", "category": "体育着・ジャージ", "place": "バスロータリー", "date": "2026-10-21", "tag": "白・学校指定", "detail": "", "source": "demo"}, {"id": "demo-98", "icon": "👟", "title": "上履き袋", "category": "靴・上履き", "place": "飛田給駅バス内", "date": "2026-10-13", "tag": "紺・名前タグ", "detail": "", "source": "demo"}, {"id": "demo-99", "icon": "📱", "title": "タブレットケース", "category": "タブレット・PC", "place": "矢野口バス内", "date": "2026-10-08", "tag": "黒・角に傷", "detail": "", "source": "demo"}, {"id": "demo-100", "icon": "🧥", "title": "紺色のパーカー", "category": "制服・衣類", "place": "三鷹バス内", "date": "2026-10-07", "tag": "紺・胸に小さなワッペン", "detail": "", "source": "demo"}, {"id": "demo-101", "icon": "🥤", "title": "黒い水筒", "category": "水筒", "place": "教室", "date": "2026-09-03", "tag": "黒・白いロゴ", "detail": "", "source": "demo"}, {"id": "demo-102", "icon": "✏️", "title": "紺色の筆箱", "category": "筆箱", "place": "廊下", "date": "2026-10-19", "tag": "紺・星のワッペン", "detail": "", "source": "demo"}, {"id": "demo-103", "icon": "🌂", "title": "折りたたみ傘", "category": "傘・折りたたみ傘", "place": "校庭", "date": "2026-09-08", "tag": "水色・無地", "detail": "", "source": "demo"}, {"id": "demo-104", "icon": "📓", "title": "青いノート", "category": "文房具", "place": "体育館", "date": "2026-09-09", "tag": "青・表紙に小さなシール", "detail": "", "source": "demo"}, {"id": "demo-105", "icon": "🎧", "title": "ワイヤレスイヤホン", "category": "イヤホン・ヘッドホン", "place": "更衣室", "date": "2026-08-29", "tag": "白・ケース付き", "detail": "", "source": "demo"}, {"id": "demo-106", "icon": "🪪", "title": "学生証ケース", "category": "学生証・カード類", "place": "ホール", "date": "2026-08-21", "tag": "透明・青いストラップ", "detail": "", "source": "demo"}, {"id": "demo-107", "icon": "👕", "title": "体育着の上", "category": "体育着・ジャージ", "place": "トイレ", "date": "2026-09-25", "tag": "白・学校指定", "detail": "", "source": "demo"}, {"id": "demo-108", "icon": "👟", "title": "上履き袋", "category": "靴・上履き", "place": "そのほか", "date": "2026-10-26", "tag": "紺・名前タグ", "detail": "", "source": "demo"}, {"id": "demo-109", "icon": "📱", "title": "タブレットケース", "category": "タブレット・PC", "place": "図書館", "date": "2026-10-13", "tag": "黒・角に傷", "detail": "", "source": "demo"}, {"id": "demo-110", "icon": "🧥", "title": "紺色のパーカー", "category": "制服・衣類", "place": "ホワイエ", "date": "2026-08-20", "tag": "紺・胸に小さなワッペン", "detail": "", "source": "demo"}, {"id": "demo-111", "icon": "🥤", "title": "黒い水筒", "category": "水筒", "place": "下駄箱", "date": "2026-09-23", "tag": "黒・白いロゴ", "detail": "", "source": "demo"}, {"id": "demo-112", "icon": "✏️", "title": "紺色の筆箱", "category": "筆箱", "place": "食堂", "date": "2026-09-14", "tag": "紺・星のワッペン", "detail": "", "source": "demo"}, {"id": "demo-113", "icon": "🌂", "title": "折りたたみ傘", "category": "傘・折りたたみ傘", "place": "バスロータリー", "date": "2026-10-13", "tag": "水色・無地", "detail": "", "source": "demo"}, {"id": "demo-114", "icon": "📓", "title": "青いノート", "category": "文房具", "place": "飛田給駅バス内", "date": "2026-09-20", "tag": "青・表紙に小さなシール", "detail": "", "source": "demo"}, {"id": "demo-115", "icon": "🎧", "title": "ワイヤレスイヤホン", "category": "イヤホン・ヘッドホン", "place": "矢野口バス内", "date": "2026-09-02", "tag": "白・ケース付き", "detail": "", "source": "demo"}, {"id": "demo-116", "icon": "🪪", "title": "学生証ケース", "category": "学生証・カード類", "place": "三鷹バス内", "date": "2026-10-07", "tag": "透明・青いストラップ", "detail": "", "source": "demo"}, {"id": "demo-117", "icon": "👕", "title": "体育着の上", "category": "体育着・ジャージ", "place": "教室", "date": "2026-08-30", "tag": "白・学校指定", "detail": "", "source": "demo"}, {"id": "demo-118", "icon": "👟", "title": "上履き袋", "category": "靴・上履き", "place": "廊下", "date": "2026-10-27", "tag": "紺・名前タグ", "detail": "", "source": "demo"}, {"id": "demo-119", "icon": "📱", "title": "タブレットケース", "category": "タブレット・PC", "place": "校庭", "date": "2026-09-24", "tag": "黒・角に傷", "detail": "", "source": "demo"}, {"id": "demo-120", "icon": "🧥", "title": "紺色のパーカー", "category": "制服・衣類", "place": "体育館", "date": "2026-08-24", "tag": "紺・胸に小さなワッペン", "detail": "", "source": "demo"}, {"id": "demo-121", "icon": "🥤", "title": "黒い水筒", "category": "水筒", "place": "更衣室", "date": "2026-10-05", "tag": "黒・白いロゴ", "detail": "", "source": "demo"}, {"id": "demo-122", "icon": "✏️", "title": "紺色の筆箱", "category": "筆箱", "place": "ホール", "date": "2026-08-24", "tag": "紺・星のワッペン", "detail": "", "source": "demo"}, {"id": "demo-123", "icon": "🌂", "title": "折りたたみ傘", "category": "傘・折りたたみ傘", "place": "トイレ", "date": "2026-10-14", "tag": "水色・無地", "detail": "", "source": "demo"}, {"id": "demo-124", "icon": "📓", "title": "青いノート", "category": "文房具", "place": "そのほか", "date": "2026-09-19", "tag": "青・表紙に小さなシール", "detail": "", "source": "demo"}, {"id": "demo-125", "icon": "🎧", "title": "ワイヤレスイヤホン", "category": "イヤホン・ヘッドホン", "place": "図書館", "date": "2026-08-24", "tag": "白・ケース付き", "detail": "", "source": "demo"}, {"id": "demo-126", "icon": "🪪", "title": "学生証ケース", "category": "学生証・カード類", "place": "ホワイエ", "date": "2026-10-02", "tag": "透明・青いストラップ", "detail": "", "source": "demo"}, {"id": "demo-127", "icon": "👕", "title": "体育着の上", "category": "体育着・ジャージ", "place": "下駄箱", "date": "2026-10-08", "tag": "白・学校指定", "detail": "", "source": "demo"}, {"id": "demo-128", "icon": "👟", "title": "上履き袋", "category": "靴・上履き", "place": "食堂", "date": "2026-09-10", "tag": "紺・名前タグ", "detail": "", "source": "demo"}, {"id": "demo-129", "icon": "📱", "title": "タブレットケース", "category": "タブレット・PC", "place": "バスロータリー", "date": "2026-10-07", "tag": "黒・角に傷", "detail": "", "source": "demo"}, {"id": "demo-130", "icon": "🧥", "title": "紺色のパーカー", "category": "制服・衣類", "place": "飛田給駅バス内", "date": "2026-08-21", "tag": "紺・胸に小さなワッペン", "detail": "", "source": "demo"}, {"id": "demo-131", "icon": "🥤", "title": "黒い水筒", "category": "水筒", "place": "矢野口バス内", "date": "2026-10-27", "tag": "黒・白いロゴ", "detail": "", "source": "demo"}, {"id": "demo-132", "icon": "✏️", "title": "紺色の筆箱", "category": "筆箱", "place": "三鷹バス内", "date": "2026-09-16", "tag": "紺・星のワッペン", "detail": "", "source": "demo"}, {"id": "demo-133", "icon": "🌂", "title": "折りたたみ傘", "category": "傘・折りたたみ傘", "place": "教室", "date": "2026-08-26", "tag": "水色・無地", "detail": "", "source": "demo"}, {"id": "demo-134", "icon": "📓", "title": "青いノート", "category": "文房具", "place": "廊下", "date": "2026-10-25", "tag": "青・表紙に小さなシール", "detail": "", "source": "demo"}, {"id": "demo-135", "icon": "🎧", "title": "ワイヤレスイヤホン", "category": "イヤホン・ヘッドホン", "place": "校庭", "date": "2026-10-13", "tag": "白・ケース付き", "detail": "", "source": "demo"}, {"id": "demo-136", "icon": "🪪", "title": "学生証ケース", "category": "学生証・カード類", "place": "体育館", "date": "2026-09-11", "tag": "透明・青いストラップ", "detail": "", "source": "demo"}, {"id": "demo-137", "icon": "👕", "title": "体育着の上", "category": "体育着・ジャージ", "place": "更衣室", "date": "2026-09-18", "tag": "白・学校指定", "detail": "", "source": "demo"}, {"id": "demo-138", "icon": "👟", "title": "上履き袋", "category": "靴・上履き", "place": "ホール", "date": "2026-09-27", "tag": "紺・名前タグ", "detail": "", "source": "demo"}, {"id": "demo-139", "icon": "📱", "title": "タブレットケース", "category": "タブレット・PC", "place": "トイレ", "date": "2026-10-20", "tag": "黒・角に傷", "detail": "", "source": "demo"}, {"id": "demo-140", "icon": "🧥", "title": "紺色のパーカー", "category": "制服・衣類", "place": "そのほか", "date": "2026-09-27", "tag": "紺・胸に小さなワッペン", "detail": "", "source": "demo"}, {"id": "demo-141", "icon": "🥤", "title": "黒い水筒", "category": "水筒", "place": "図書館", "date": "2026-10-17", "tag": "黒・白いロゴ", "detail": "", "source": "demo"}, {"id": "demo-142", "icon": "✏️", "title": "紺色の筆箱", "category": "筆箱", "place": "ホワイエ", "date": "2026-10-17", "tag": "紺・星のワッペン", "detail": "", "source": "demo"}, {"id": "demo-143", "icon": "🌂", "title": "折りたたみ傘", "category": "傘・折りたたみ傘", "place": "下駄箱", "date": "2026-08-26", "tag": "水色・無地", "detail": "", "source": "demo"}, {"id": "demo-144", "icon": "📓", "title": "青いノート", "category": "文房具", "place": "食堂", "date": "2026-10-19", "tag": "青・表紙に小さなシール", "detail": "", "source": "demo"}, {"id": "demo-145", "icon": "🎧", "title": "ワイヤレスイヤホン", "category": "イヤホン・ヘッドホン", "place": "バスロータリー", "date": "2026-08-20", "tag": "白・ケース付き", "detail": "", "source": "demo"}, {"id": "demo-146", "icon": "🪪", "title": "学生証ケース", "category": "学生証・カード類", "place": "飛田給駅バス内", "date": "2026-10-11", "tag": "透明・青いストラップ", "detail": "", "source": "demo"}, {"id": "demo-147", "icon": "👕", "title": "体育着の上", "category": "体育着・ジャージ", "place": "矢野口バス内", "date": "2026-10-11", "tag": "白・学校指定", "detail": "", "source": "demo"}, {"id": "demo-148", "icon": "👟", "title": "上履き袋", "category": "靴・上履き", "place": "三鷹バス内", "date": "2026-08-28", "tag": "紺・名前タグ", "detail": "", "source": "demo"}, {"id": "demo-149", "icon": "📱", "title": "タブレットケース", "category": "タブレット・PC", "place": "教室", "date": "2026-10-06", "tag": "黒・角に傷", "detail": "", "source": "demo"}, {"id": "demo-150", "icon": "🧥", "title": "紺色のパーカー", "category": "制服・衣類", "place": "廊下", "date": "2026-09-24", "tag": "紺・胸に小さなワッペン", "detail": "", "source": "demo"}];
+let currentClaimItem = null;
+let currentRole = localStorage.getItem("wn_role") || "student";
+
+const $=id=>document.getElementById(id);
+function uid(prefix){return prefix+"-"+Date.now()+"-"+Math.random().toString(36).slice(2,8)}
+function getItems(){return JSON.parse(localStorage.getItem("wn_items")||"[]")}
+function saveItems(a){localStorage.setItem("wn_items",JSON.stringify(a))}
+function getClaims(){return JSON.parse(localStorage.getItem("wn_claims")||"[]")}
+function saveClaims(a){localStorage.setItem("wn_claims",JSON.stringify(a))}
+function getLost(){return JSON.parse(localStorage.getItem("wn_lost")||"[]")}
+function saveLost(a){localStorage.setItem("wn_lost",JSON.stringify(a))}
+function allItems(){const ov=JSON.parse(localStorage.getItem("wn_returned_overrides")||"{}");return [...demoItems,...getItems()].map(x=>({...x,returned:Object.prototype.hasOwnProperty.call(ov,x.id)?!!ov[x.id]:!!x.returned}))}
+demoItems.forEach((x,i)=>{if(typeof x.returned!=="boolean")x.returned=(i+1)%5===0})
+
+function init(){
+  if(!localStorage.getItem("wn_initialized")){
+    localStorage.setItem("wn_initialized","1");
+    localStorage.setItem("wn_items","[]");localStorage.setItem("wn_claims","[]");localStorage.setItem("wn_lost","[]");localStorage.setItem("wn_notifications","[]");
+  }
+  document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>switchPage(b.dataset.page));
+  $("searchInput").addEventListener("keydown",e=>{if(e.key==="Enter")executeSearch()});
+  fillSelects();renderSearch(allItems());renderPlaces();setRole(currentRole);refreshTeacher();
+  $("regDate").value=new Date().toISOString().slice(0,10);
+  $("lostDate").value=new Date().toISOString().slice(0,10);
+  $("lostName").addEventListener("blur",()=>showLostNotifications($("lostName").value.trim()));
+}
+function fillSelects(){
+  $("regCategory").innerHTML=categories.map(x=>`<option>${x}</option>`).join("");
+  $("lostCategory").innerHTML=categories.map(x=>`<option>${x}</option>`).join("");
+  ["regPlace","lostPlace"].forEach(id=>$(id).innerHTML=places.map(x=>`<option>${x}</option>`).join(""));
+}
+function setRole(role){
+  currentRole=role;localStorage.setItem("wn_role",role);
+  document.querySelectorAll(".student-only").forEach(el=>el.classList.toggle("hidden-by-role",role!=="student"));
+  document.querySelectorAll(".teacher-only").forEach(el=>el.classList.toggle("hidden-by-role",role!=="teacher"));
+  $("studentRoleBtn").classList.toggle("active",role==="student");$("teacherRoleBtn").classList.toggle("active",role==="teacher");
+  if(role!=="teacher" && $("teacher").classList.contains("active"))switchPage("search");
+  if(role!=="student" && $("lost").classList.contains("active"))switchPage("search");
+}
+function switchPage(id){
+  if(id==="teacher" && currentRole!=="teacher"){alert("先生ページは先生のみ見られます。");return;}
+  if(id==="lost" && currentRole!=="student"){alert("「なくした物を申請」は生徒向けページです。");return;}
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  $(id).classList.add("active");
+  document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("active",b.dataset.page===id));
+  if(id==="teacher")refreshTeacher();
+  if(id==="lost"){const n=$("lostName").value.trim();if(n)showLostNotifications(n);}
+}
+function executeSearch(){
+  const q=$("searchInput").value.trim().toLowerCase();
+  const items=allItems().filter(x=>!q || [x.title,x.place,x.category,x.tag,x.detail].join(" ").toLowerCase().includes(q));
+  renderSearch(items);
+}
+function renderSearch(items){
+  $("resultCount").textContent=`${items.length}件`;
+  $("searchGrid").innerHTML=items.length?items.map(itemCard).join(""):`<div class="empty" style="grid-column:1/-1">該当する忘れ物が見つかりませんでした。</div>`;
+}
+function itemCard(x){
+  return `<article class="card">
+    <div class="item-icon">${x.icon||"📦"}</div><div class="item-title">${esc(x.title)}</div>
+    <div class="meta">📍 ${esc(x.place)}${x.detail?`（${esc(x.detail)}）`:""}<br>📅 ${esc(x.date)}<br>🏷️ ${esc(x.category||"その他")}</div>
+    <span class="tag">${esc(x.tag||"特徴情報なし")}</span>
+    <button class="primary claim" onclick="openClaim('${x.id}')">🙋 これ、自分のかも！</button>
+    ${currentRole==="teacher"?`<button class="secondary claim" onclick="toggleReturned('${x.id}')">${x.returned?"↩️ 返却済みを取り消す":"✅ 返却済みにする"}</button>`:""}
+  </article>`;
+}
+function renderPlaces(){
+  $("placeButtons").innerHTML=places.map((p,i)=>`<button class="place-btn" onclick="filterPlace('${escAttr(p)}',this)">${p}</button>`).join("");
+}
+function filterPlace(place,btn){
+  document.querySelectorAll(".place-btn").forEach(b=>b.classList.remove("active"));btn.classList.add("active");
+  const items=allItems().filter(x=>x.place===place);$("placeHeading").textContent=`📍 ${place}`;$("placeCount").textContent=`${items.length}件`;
+  $("placeGrid").innerHTML=items.length?items.map(itemCard).join(""):`<div class="empty" style="grid-column:1/-1">この場所の登録はまだありません。</div>`;
+}
+function openClaim(id){
+  currentClaimItem=allItems().find(x=>x.id===id); if(!currentClaimItem)return;
+  $("claimItemText").innerHTML=`<strong>${esc(currentClaimItem.title)}</strong>（${esc(currentClaimItem.place)}）について申請します。`;
+  $("claimModal").classList.add("show");$("claimName").focus();
+}
+function closeClaim(){$("claimModal").classList.remove("show");currentClaimItem=null}
+function submitClaim(){
+  if(!$("claimName").value.trim()){alert("名前を入力してください。");return}
+  const claims=getClaims();claims.push({id:uid("claim"),itemId:currentClaimItem.id,itemTitle:currentClaimItem.title,itemPlace:currentClaimItem.place,name:$("claimName").value.trim(),method:$("claimMethod").value,contact:$("claimContact").value.trim(),message:$("claimMessage").value.trim(),createdAt:new Date().toISOString(),status:"未対応"});
+  saveClaims(claims);closeClaim();showNotice("申請しました！先生ページから確認・連絡できます。");refreshTeacher();
+  $("claimName").value="";$("claimContact").value="";$("claimMessage").value="";
+}
+function showNotice(t){$("notice").textContent="✅ "+t;$("notice").classList.add("show");setTimeout(()=>$("notice").classList.remove("show"),4500)}
+function registerItem(){
+  const title=$("regTitle").value.trim();if(!title){alert("忘れ物の名前を入力してください。");return}
+  const icons={"水筒":"🥤","筆箱":"✏️","傘・折りたたみ傘":"🌂","体育着・ジャージ":"👕","制服・衣類":"🧥","靴・上履き":"👟","文房具":"📓","学生証・カード類":"🪪","タブレット・PC":"📱","イヤホン・ヘッドホン":"🎧","その他":"📦"};
+  const item={id:uid("item"),icon:icons[$("regCategory").value]||"📦",title,category:$("regCategory").value,place:$("regPlace").value,date:$("regDate").value||new Date().toISOString().slice(0,10),tag:$("regTag").value.trim(),detail:$("regDetail").value.trim(),source:"user"};
+  const a=getItems();a.unshift(item);saveItems(a);
+  const reports=getLost(),ns=getNotifications();
+  reports.forEach(r=>{if(isSimilar(r,item))ns.unshift({id:uid("notice"),reportId:r.id,name:r.name,itemId:item.id,itemTitle:item.title,itemPlace:item.place,createdAt:new Date().toISOString(),read:false})});
+  saveNotifications(ns);
+  ["regTitle","regTag","regDetail"].forEach(id=>$(id).value="");$("regPhoto").value="";$("photoPreview").innerHTML="";$("regAIStatus").textContent="";
+  alert(ns.some(n=>n.itemId===item.id)?"忘れ物を登録しました！似た捜索届があるため、該当する申請者への通知を作成しました。":"忘れ物を登録しました！");
+  switchPage("search");renderSearch(allItems());
+}
+function previewPhoto(input){
+  if(!input.files[0])return;const r=new FileReader();r.onload=e=>$("photoPreview").innerHTML=`<img src="${e.target.result}" alt="選択した忘れ物の写真">`;r.readAsDataURL(input.files[0]);
+  $("regAIStatus").textContent="📷 写真を読み込みました。必要ならAI分析を押してください。";
+}
+function previewLostPhoto(input){
+  if(!input.files[0])return;
+  const r=new FileReader();
+  r.onload=e=>$("lostPhotoPreview").innerHTML=`<img src="${e.target.result}" alt="選択したなくし物の写真">`;
+  r.readAsDataURL(input.files[0]);
+  $("lostAIStatus").textContent="写真を読み込みました。「写真を読み取って自動入力」を押してください。";
+}
+
+
+async function analyzeRegisterPhoto(){
+  const file=$("regPhoto").files[0];
+  if(!file){alert("先に写真を選んでください。");return}
+  $("regAIStatus").textContent="🤖 AIが写真を確認しています…";
+  try{
+    const result=await analyzeImageWithAI(file,"found");
+    $("regCategory").value=categories.includes(result.category)?result.category:"その他";
+    $("regTitle").value=result.title||"写真の物";
+    const currentTag=$("regTag").value.trim();
+    $("regTag").value=[result.color,result.feature,currentTag].filter(Boolean).join("・");
+    $("regAIStatus").textContent="✨ AIが写真から候補を入力しました。実際の内容を確認して必要なら修正してください。";
+  }catch(err){
+    const result=photoHeuristic(file.name||"");
+    $("regCategory").value=result.category;$("regTitle").value=result.title;
+    const currentTag=$("regTag").value.trim();$("regTag").value=[result.color,result.feature,currentTag].filter(Boolean).join("・");
+    $("regAIStatus").textContent="⚠️ AI接続がまだ設定されていないため、ファイル名から候補を入力しました。";
+    console.warn(err);
+  }
+}
+function clearRegisterAI(){$("regTitle").value="";$("regTag").value="";$("regAIStatus").textContent=""}
+function photoHeuristic(filename){
+  const name=String(filename||"").toLowerCase();
+  let category="その他",title="写真の物";
+  const rules=[[["水筒","ボトル","bottle","tumbler"],"水筒","水筒"],[["筆箱","ペンケース","pencil"],"筆箱","筆箱"],[["傘","umbrella"],"傘・折りたたみ傘","傘"],[["イヤホン","airpods","earphone","headphone"],"イヤホン・ヘッドホン","イヤホン"],[["タブレット","ipad","tablet","pc"],"タブレット・PC","タブレット"],[["学生証","カード","card"],"学生証・カード類","カード"],[["上履き","靴","shoe"],"靴・上履き","靴"],[["体育着","ジャージ","jersey"],"体育着・ジャージ","体育着"],[["制服","パーカー","上着","服"],"制服・衣類","衣類"],[["ノート","note","notebook"],"文房具","ノート"]];
+  for(const [keys,cat,t] of rules){if(keys.some(k=>name.includes(k))){category=cat;title=t;break}}
+  const colors=[["黒","黒"],["白","白"],["青","青"],["紺","紺"],["水色","水色"],["赤","赤"],["ピンク","ピンク"],["緑","緑"],["黄色","黄色"],["茶","茶"]];
+  let color="";for(const [k,c] of colors){if(name.includes(k)){color=c;break}}
+  return {category,title,color,feature:color?color+"色の特徴":"写真から特徴を確認"};
+}
+
+async function analyzeLostPhoto(){
+  const file=$("lostPhoto").files[0];
+  if(!file){alert("先に写真を選んでください。");return}
+  $("lostAIStatus").textContent="🤖 AIが写真を確認しています…";
+  try{
+    const result=await analyzeImageWithAI(file,"lost");
+    $("lostCategory").value=categories.includes(result.category)?result.category:"その他";
+    $("lostTitle").value=result.title||"写真の物";
+    $("lostColor").value=result.color||"";
+    $("lostBrand").value=result.brand||"";
+    $("lostPattern").value=result.pattern||"";
+    $("lostFeature").value=result.feature||"写真から確認した特徴";
+    $("lostAIStatus").textContent="✨ AIが写真から候補を入力しました。実際の内容を確認して必要なら修正してください。";
+  }catch(err){
+    const result=photoHeuristic(file.name||"");
+    $("lostCategory").value=result.category;$("lostTitle").value=result.title+"（写真から候補入力）";
+    if(result.color)$("lostColor").value=result.color;
+    $("lostFeature").value=result.feature;
+    $("lostAIStatus").textContent="⚠️ AI接続がまだ設定されていないため、ファイル名から候補を入力しました。";
+    console.warn(err);
+  }
+}
+
+async function analyzeImageWithAI(file,mode){
+  const dataUrl=await fileToDataURL(file);
+  const res=await fetch("/api/analyze-image",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({image:dataUrl,mode})});
+  let body={};try{body=await res.json()}catch(_){}
+  if(!res.ok)throw new Error(body.error||"AI分析に失敗しました");
+  if(!body.result)throw new Error("AIから結果を受け取れませんでした");
+  return body.result;
+}
+function fileToDataURL(file){return new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=reject;r.readAsDataURL(file)})}
+
+function clearLostAI(){
+  $("lostTitle").value="";$("lostColor").value="";$("lostBrand").value="";$("lostPattern").value="";$("lostFeature").value="";
+  $("lostAIStatus").textContent="";
+}
+
+function getNotifications(){return JSON.parse(localStorage.getItem("wn_notifications")||"[]")}
+function saveNotifications(a){localStorage.setItem("wn_notifications",JSON.stringify(a))}
+
+function submitLostReport(){
+  const name=$("lostName").value.trim(),title=$("lostTitle").value.trim(),feature=$("lostFeature").value.trim();
+  if(!name||!title||!feature){alert("「申請者の名前」「なくした物」「自分の物だと分かる特徴」は必須です。");return}
+  const report={id:uid("lost"),name,title,category:$("lostCategory").value,date:$("lostDate").value,place:$("lostPlace").value,color:$("lostColor").value.trim(),brand:$("lostBrand").value.trim(),pattern:$("lostPattern").value.trim(),feature,detail:$("lostDetail").value.trim(),method:$("lostContactMethod").value,contact:$("lostContact").value.trim(),notes:$("lostNotes").value.trim(),createdAt:new Date().toISOString()};
+  const a=getLost();a.unshift(report);saveLost(a);
+  const matches=allItems().filter(item=>isSimilar(report,item));
+  if(matches.length){
+    const ns=getNotifications();
+    matches.slice(0,5).forEach(item=>ns.unshift({id:uid("notice"),reportId:report.id,name:report.name,itemId:item.id,itemTitle:item.title,itemPlace:item.place,createdAt:new Date().toISOString(),read:false}));
+    saveNotifications(ns);
+  }
+  alert(matches.length ? `捜索届を提出しました！似た忘れ物が${matches.length}件見つかったため、申請者への通知を作成しました。` : "捜索届を提出しました！似た忘れ物が見つかったら通知されます。");
+  showLostNotifications(name);
+  ["lostName","lostTitle","lostColor","lostBrand","lostPattern","lostFeature","lostDetail","lostContact","lostNotes"].forEach(id=>$(id).value="");
+  $("lostPhoto").value="";$("lostPhotoPreview").innerHTML="";$("lostAIStatus").textContent="";
+  refreshTeacher();
+}
+
+function normalize(s){return String(s||"").toLowerCase().replace(/\s/g,"")}
+function isSimilar(report,item){
+  const a=normalize(report.title+" "+report.category+" "+report.color+" "+report.brand+" "+report.pattern);
+  const b=normalize(item.title+" "+item.category+" "+item.tag);
+  let score=0;
+  if(report.category===item.category)score+=3;
+  if(report.place===item.place)score+=2;
+  const words=["水筒","筆箱","傘","体育","ジャージ","制服","靴","上履き","文房具","学生証","カード","タブレット","イヤホン","ノート"];
+  words.forEach(w=>{if(a.includes(w)&&b.includes(w))score+=2});
+  ["黒","白","青","紺","水色","赤","ピンク","緑","黄色","茶"].forEach(c=>{if(a.includes(c)&&b.includes(c))score+=1});
+  if(normalize(report.feature).split(/[・、, ]/).some(w=>w.length>=2&&b.includes(w)))score+=1;
+  return score>=4;
+}
+
+function showLostNotifications(name){
+  const box=$("lostNotifications");if(!box)return;
+  const ns=getNotifications().filter(n=>n.name===name);
+  if(!ns.length){box.style.display="none";box.innerHTML="";return}
+  box.style.display="block";
+  box.innerHTML=`<h3>🔔 ${esc(name)}さんへの通知</h3>`+
+    ns.slice(0,8).map(n=>`<p>「${esc(n.itemTitle)}」が${esc(n.itemPlace)}に登録されています。あなたの申請と似ている可能性があります。</p>`).join("");
+}
+
+
+
+function refreshTeacher(){
+  const items=allItems(), claims=getClaims();
+  const {mon,sun}=weekRange();
+  const week=items.filter(x=>{const d=new Date(x.date+"T00:00:00");return d>=mon&&d<=sun});
+  const returned=items.filter(x=>x.returned).length;
+  $("statAll").textContent=items.length;$("statWeek").textContent=week.length;$("statReturned").textContent=returned;$("statClaims").textContent=claims.filter(c=>c.status!=="連絡済み").length;
+  $("claimCount").textContent=`${claims.length}件`;
+  const groups={};claims.forEach(c=>{const key=c.itemId||c.itemTitle||"unknown";(groups[key]??=[]).push(c)});
+  const groupEntries=Object.entries(groups);
+  $("claimList").innerHTML=groupEntries.length?groupEntries.map(([key,cs])=>{
+    const first=cs[0];const item=items.find(x=>x.id===key);const category=item?.category||"その他";
+    return `<div class="claim-group"><div class="claim-group-title"><span>🏷️ ${esc(category)}　｜　${esc(first.itemTitle)}</span><span>${cs.length}件</span></div><div class="claim-group-body">${cs.map(c=>`<div class="claim-item"><strong>🙋 ${esc(c.name)} さん</strong><div class="meta">📍 ${esc(c.itemPlace)}　📅 ${new Date(c.createdAt).toLocaleString("ja-JP")}<br>📞 連絡方法：${esc(c.method)}${c.contact?`　｜連絡先：${esc(c.contact)}`:""}${c.message?`<br>💬 ${esc(c.message)}`:""}</div><div style="margin-top:9px;display:flex;gap:8px;align-items:center;flex-wrap:wrap"><span class="status ${c.status==="連絡済み"?"done":""}">${c.status}</span>${c.status!=="連絡済み"?`<button class="secondary" onclick="contactClaim('${c.id}')">📨 連絡済みにする</button>`:""}<button class="secondary danger" onclick="deleteClaim('${c.id}')">削除</button></div></div>`).join("")}</div></div>`;
+  }).join(""):`<div class="empty">「これ、自分のかも！」申請はまだありません。</div>`;
+  const counts={};items.forEach(x=>counts[x.place]=(counts[x.place]||0)+1);
+  const max=Math.max(1,...Object.values(counts));
+  $("placeBars").innerHTML=Object.entries(counts).sort((a,b)=>b[1]-a[1]).map(([p,n])=>{
+    const r=items.filter(x=>x.place===p&&x.returned).length;const rate=n?Math.round(r/n*100):0;
+    const width=n/max*100;
+    return `<div class="barrow"><div class="barlabel"><span>📍 ${esc(p)}</span><b>${n}件・返却率 ${rate}%</b></div><div class="bar"><span class="count-bar" style="width:${width}%"></span><span class="return-bar" style="width:${rate}%"></span></div><div class="meta" style="font-size:11px;margin-top:3px">返却済み ${r}件 / ${n}件</div></div>`;
+  }).join("")+`<div class="bar-legend"><span><i class="legend-dot purple-dot"></i>忘れ物の数</span><span><i class="legend-dot red-dot"></i>返却率</span></div>`;
+  updateAIAnalysis(week,items);
+  if($("mailPreview")) $("mailPreview").textContent=buildMailBody(week);
+}
+
+function toggleReturned(id){
+  if(currentRole!=="teacher"){alert("返却済みへの変更は先生のみ行えます。");return;}
+  const a=getItems(),x=a.find(v=>v.id===id);
+  const current=allItems().find(v=>v.id===id);
+  if(current){const ov=JSON.parse(localStorage.getItem("wn_returned_overrides")||"{}");ov[id]=!current.returned;localStorage.setItem("wn_returned_overrides",JSON.stringify(ov));if(x){x.returned=ov[id];saveItems(a)}refreshTeacher();renderSearch(allItems());if($('place').classList.contains('active')){const active=document.querySelector('.place-btn.active');if(active)filterPlace(active.textContent,active)}}
+}
+function weekRange(){const now=new Date(),day=now.getDay(),diff=day===0?6:day-1;const mon=new Date(now);mon.setHours(0,0,0,0);mon.setDate(now.getDate()-diff);const sun=new Date(mon);sun.setDate(mon.getDate()+6);sun.setHours(23,59,59,999);return {mon,sun}}
+function weeklyStats(){const {mon,sun}=weekRange();const week=allItems().filter(x=>{const d=new Date(x.date+"T00:00:00");return d>=mon&&d<=sun});const cats={},placesCount={};week.forEach(x=>{cats[x.category||"その他"]=(cats[x.category||"その他"]||0)+1;placesCount[x.place]=(placesCount[x.place]||0)+1});return {week,cats,placesCount}}
+function buildMailBody(week){
+  const {cats,placesCount}=weeklyStats();
+  if(!week.length)return `先生方へ
+
+今週の忘れ物は0件でした。
+
+来週も、忘れ物を見つけたら「忘れ物ナビ」へ登録をお願いします。`;
+  const combos={};week.forEach(x=>{const key=`${x.category||"その他"}（${x.place}）`;combos[key]=(combos[key]||0)+1});
+  const topCats=Object.entries(cats).sort((a,b)=>b[1]-a[1]);
+  const topPlaces=Object.entries(placesCount).sort((a,b)=>b[1]-a[1]);
+  const lines=[`先生方へ`,``,`今週の忘れ物は ${week.length}件 でした。`,``,`【忘れ物の種類・場所】`];
+  Object.entries(combos).sort((a,b)=>b[1]-a[1]).slice(0,12).forEach(([k,n])=>lines.push(`・${k} ${n}件`));
+  lines.push(``,`【多かった傾向】`,`・種類では「${topCats[0][0]}」が ${topCats[0][1]}件で最も多く登録されました。`,`・場所では「${topPlaces[0][0]}」が ${topPlaces[0][1]}件で最も多く登録されました。`,``,`心当たりのある人は「忘れ物ナビ」で確認してください。`,`「これ、自分のかも！」から申請できます。`,``,`ご協力をよろしくお願いします。`);
+  return lines.join("\n");
+}
+function openMailSummary(){const {week}=weeklyStats();$("mailSubject").value=`【忘れ物ナビ】今週の忘れ物は${week.length}件でした`;$("mailBody").value=buildMailBody(week);$("mailPreview").textContent=$("mailBody").value;$("mailModal").classList.add("show");}
+function closeMailSummary(){$("mailModal").classList.remove("show")}
+function copyMailText(){const text=`件名：${$("mailSubject").value}\n\n${$("mailBody").value}`;if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(text).then(()=>alert("メール用の文章をコピーしました！"),()=>fallbackCopy(text))}else fallbackCopy(text)}
+function fallbackCopy(text){const ta=document.createElement("textarea");ta.value=text;document.body.appendChild(ta);ta.select();document.execCommand("copy");ta.remove();alert("メール用の文章をコピーしました！")}
+function updateAIAnalysis(week,items){
+  const text=$("aiAnalysisText"),points=$("aiAnalysisPoints");if(!text||!points)return;
+  if(!items.length){text.textContent="まだ分析できる忘れ物データがありません。";points.innerHTML="";return}
+  const cat={},place={},returnedByPlace={};items.forEach(x=>{cat[x.category||"その他"]=(cat[x.category||"その他"]||0)+1;place[x.place]=(place[x.place]||0)+1});
+  Object.keys(place).forEach(p=>{const all=items.filter(x=>x.place===p);const r=all.filter(x=>x.returned).length;returnedByPlace[p]=all.length?Math.round(r/all.length*100):0});
+  const topCat=Object.entries(cat).sort((a,b)=>b[1]-a[1])[0];const topPlace=Object.entries(place).sort((a,b)=>b[1]-a[1])[0];
+  const weekRate=week.length?Math.round(week.filter(x=>x.returned).length/week.length*100):0;
+  text.innerHTML=`現在の登録データから、<b>「どんな物が」「どこで」多いか</b>と返却状況を自動集計しています。今週は ${week.length}件登録され、今週登録分の返却率は ${weekRate}% です。`;
+  points.innerHTML=`<div class="analysis-point"><span>多い種類</span><b>${esc(topCat[0])}</b><div class="meta">${topCat[1]}件</div></div><div class="analysis-point"><span>多い場所</span><b>${esc(topPlace[0])}</b><div class="meta">${topPlace[1]}件</div></div><div class="analysis-point"><span>返却率が高い場所</span><b>${esc(Object.entries(returnedByPlace).sort((a,b)=>b[1]-a[1])[0][0])}</b><div class="meta">${Object.entries(returnedByPlace).sort((a,b)=>b[1]-a[1])[0][1]}%</div></div>`;
+}
+
+function contactClaim(id){
+  const a=getClaims(),c=a.find(x=>x.id===id);if(!c)return;
+  c.status="連絡済み";c.contactedAt=new Date().toISOString();saveClaims(a);refreshTeacher();alert(`${c.name} さんへの連絡を「連絡済み」にしました。`);
+}
+function deleteClaim(id){if(!confirm("この申請を削除しますか？"))return;saveClaims(getClaims().filter(x=>x.id!==id));refreshTeacher()}
+function esc(s){return String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
+function escAttr(s){return String(s).replace(/'/g,"\\'")}
+init();
+</script>
+</body>
+</html>
